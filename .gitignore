@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Environment
+.env
+
+# Cache data
+backend/app/data/cache/*
+!backend/app/data/cache/.gitkeep
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
