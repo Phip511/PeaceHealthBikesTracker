@@ -17,3 +17,6 @@ backend/app/data/cache/*
 
 # Logs
 *.log
+
+# Backups
+*~
