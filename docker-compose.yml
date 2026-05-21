@@ -1,1 +1,21 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: peacehealth-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_MODE=live
+      - GBFS_AUTO_DISCOVERY_URL=https://peacehealthrides.com/opendata/gbfs.json
+    volumes:
+      - ./backend/app/data/cache:/app/app/data/cache
 
+  frontend:
+    build:
+      context: ./frontend
+    container_name: peacehealth-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
