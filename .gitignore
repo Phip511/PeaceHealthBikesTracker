@@ -20,3 +20,6 @@ backend/app/data/cache/*
 
 # Backups
 *~
+
+# IDE
+.idea

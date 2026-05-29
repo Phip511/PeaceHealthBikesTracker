@@ -1,1 +1,23 @@
-
+{
+  "last_updated": 1780056000,
+  "ttl": 300,
+  "version": "2.3",
+  "data": {
+    "alerts": [
+      {
+        "alert_id": "alert-downtown-maintenance",
+        "summary": "Downtown Eugene hub has limited bike availability",
+        "description": "Sample alert for demo mode. The downtown hub is shown with no bikes available so fallback and alert displays can be tested.",
+        "station_ids": [
+          "hub-downtown-eugene"
+        ],
+        "times": [
+          {
+            "start": 1780052400,
+            "end": 1780066800
+          }
+        ]
+      }
+    ]
+  }
+}

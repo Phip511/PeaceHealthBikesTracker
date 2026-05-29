@@ -1,1 +1,37 @@
-
+{
+  "last_updated": 1780056000,
+  "ttl": 300,
+  "version": "2.3",
+  "data": {
+    "stations": [
+      {
+        "station_id": "hub-uo-library",
+        "name": "UO Library Hub",
+        "lat": 44.044650,
+        "lon": -123.078260,
+        "capacity": 12
+      },
+      {
+        "station_id": "hub-matthew-knight",
+        "name": "Matthew Knight Arena Hub",
+        "lat": 44.045210,
+        "lon": -123.066880,
+        "capacity": 10
+      },
+      {
+        "station_id": "hub-downtown-eugene",
+        "name": "Downtown Eugene Hub",
+        "lat": 44.051760,
+        "lon": -123.092310,
+        "capacity": 14
+      },
+      {
+        "station_id": "hub-springfield-station",
+        "name": "Springfield Station Hub",
+        "lat": 44.046050,
+        "lon": -123.022540,
+        "capacity": 8
+      }
+    ]
+  }
+}

@@ -1,1 +1,27 @@
-
+{
+  "last_updated": 1780056000,
+  "ttl": 300,
+  "version": "2.3",
+  "data": {
+    "en": {
+      "feeds": [
+        {
+          "name": "free_bike_status",
+          "url": "free_bike_status.json"
+        },
+        {
+          "name": "station_information",
+          "url": "station_information.json"
+        },
+        {
+          "name": "station_status",
+          "url": "station_status.json"
+        },
+        {
+          "name": "system_alerts",
+          "url": "system_alerts.json"
+        }
+      ]
+    }
+  }
+}

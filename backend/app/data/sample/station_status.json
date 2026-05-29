@@ -1,1 +1,45 @@
-
+{
+  "last_updated": 1780056000,
+  "ttl": 60,
+  "version": "2.3",
+  "data": {
+    "stations": [
+      {
+        "station_id": "hub-uo-library",
+        "num_bikes_available": 5,
+        "num_docks_available": 7,
+        "is_installed": 1,
+        "is_renting": 1,
+        "is_returning": 1,
+        "last_reported": 1780055960
+      },
+      {
+        "station_id": "hub-matthew-knight",
+        "num_bikes_available": 2,
+        "num_docks_available": 8,
+        "is_installed": 1,
+        "is_renting": 1,
+        "is_returning": 1,
+        "last_reported": 1780055920
+      },
+      {
+        "station_id": "hub-downtown-eugene",
+        "num_bikes_available": 0,
+        "num_docks_available": 14,
+        "is_installed": 1,
+        "is_renting": 1,
+        "is_returning": 1,
+        "last_reported": 1780055880
+      },
+      {
+        "station_id": "hub-springfield-station",
+        "num_bikes_available": 3,
+        "num_docks_available": 5,
+        "is_installed": 1,
+        "is_renting": 1,
+        "is_returning": 1,
+        "last_reported": 1780055840
+      }
+    ]
+  }
+}
