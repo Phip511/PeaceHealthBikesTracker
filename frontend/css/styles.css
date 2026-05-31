@@ -188,3 +188,32 @@ body {
   outline-offset: 2px;
   transform: scale(1.25);
 }
+
+.route-button {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.route-button.secondary {
+  background: #64748b;
+}
+
+.route-button:hover {
+  opacity: 0.9;
+}
+
+.start-marker {
+  background: #f97316;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  width: 18px;
+  height: 18px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}

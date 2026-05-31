@@ -1,6 +1,13 @@
 import { fetchDashboardSnapshot } from "./api_client.js";
 import { createMap } from "./map_view.js";
 import { renderBikeMarkers, renderHubMarkers } from "./marker_renderer.js";
+import {
+  clearRoute,
+  displayRouteToDestination,
+  enableRouteDisplay,
+  useBrowserLocation,
+} from "./route_display.js";
+
 
 const map = createMap("map");
 
@@ -9,6 +16,19 @@ const bikeCountElement = document.querySelector("#bike-count");
 const hubCountElement = document.querySelector("#hub-count");
 const destinationDetailsElement = document.querySelector("#destination-details");
 const freshnessDetailsElement = document.querySelector("#freshness-details");
+const routeDetailsElement = document.querySelector("#route-details");
+const useLocationButton = document.querySelector("#use-location-button");
+const clearRouteButton = document.querySelector("#clear-route-button");
+
+enableRouteDisplay(map, routeDetailsElement);
+
+useLocationButton.addEventListener("click", () => {
+  useBrowserLocation(map, routeDetailsElement);
+});
+
+clearRouteButton.addEventListener("click", () => {
+  clearRoute(map, routeDetailsElement);
+});
 
 loadDashboard();
 
@@ -87,6 +107,7 @@ function showDestinationDetails(destination) {
     <p><span class="details-label">Available bikes:</span> ${availableBikesText}</p>
     <p><span class="details-label">Last reported:</span> ${formatTimestamp(destination.lastReported)}</p>
   `;
+  displayRouteToDestination(map, routeDetailsElement, destination);
 }
 
 function collectWarnings(snapshot) {
