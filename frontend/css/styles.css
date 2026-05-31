@@ -156,3 +156,29 @@ body {
 .details-label {
   font-weight: 700;
 }
+
+.warning-list {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: #92400e;
+}
+
+.warning-list li {
+  margin-bottom: 4px;
+}
+
+.source-live {
+  color: #166534;
+  font-weight: 700;
+}
+
+.source-cache,
+.source-sample {
+  color: #92400e;
+  font-weight: 700;
+}
+
+.source-error {
+  color: #991b1b;
+  font-weight: 700;
+}

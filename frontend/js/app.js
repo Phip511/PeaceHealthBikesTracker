@@ -8,6 +8,7 @@ const dataStatusElement = document.querySelector("#data-status");
 const bikeCountElement = document.querySelector("#bike-count");
 const hubCountElement = document.querySelector("#hub-count");
 const destinationDetailsElement = document.querySelector("#destination-details");
+const freshnessDetailsElement = document.querySelector("#freshness-details");
 
 loadDashboard();
 
@@ -20,10 +21,16 @@ async function loadDashboard() {
 
     updateCounts(snapshot);
     updateStatus(snapshot.status);
+    updateFreshness(snapshot);
   } catch (error) {
     console.error(error);
     dataStatusElement.textContent = "Could not load dashboard data.";
     dataStatusElement.className = "status-pill error";
+
+    freshnessDetailsElement.innerHTML = `
+      <p><span class="details-label">Status:</span> <span class="source-error">Error</span></p>
+      <p>Could not load freshness information.</p>
+    `;
   }
 }
 
@@ -46,6 +53,24 @@ function updateStatus(status) {
   dataStatusElement.className = `status-pill ${status.source}`;
 }
 
+function updateFreshness(snapshot) {
+  const freshness = snapshot.freshness || {};
+  const status = snapshot.status || {};
+  const source = status.source || freshness.source || "unknown";
+  const sourceLabel = status.source_label || source;
+  const freshnessTime = freshness.last_updated || status.last_successful_update;
+  const warnings = collectWarnings(snapshot);
+
+  freshnessDetailsElement.innerHTML = `
+    <p><span class="details-label">Source:</span> <span class="${sourceClass(source)}">${escapeHtml(sourceLabel)}</span></p>
+    <p><span class="details-label">Last updated:</span> ${formatTimestamp(freshnessTime)}</p>
+    <p><span class="details-label">Live feed available:</span> ${formatYesNo(status.live_feed_available)}</p>
+    <p><span class="details-label">Cached data available:</span> ${formatYesNo(status.cache_data_available)}</p>
+    <p><span class="details-label">Sample data available:</span> ${formatYesNo(status.sample_data_available)}</p>
+    ${renderWarnings(warnings)}
+  `;
+}
+
 function showDestinationDetails(destination) {
   const typeLabel = destination.type === "bike" ? "Bike" : "Hub";
   const availableBikesText =
@@ -62,6 +87,69 @@ function showDestinationDetails(destination) {
     <p><span class="details-label">Available bikes:</span> ${availableBikesText}</p>
     <p><span class="details-label">Last reported:</span> ${formatTimestamp(destination.lastReported)}</p>
   `;
+}
+
+function collectWarnings(snapshot) {
+  const warnings = [];
+
+  if (Array.isArray(snapshot.warnings)) {
+    snapshot.warnings.forEach((warning) => {
+      if (typeof warning === "string") {
+        warnings.push(warning);
+      } else if (warning && warning.message) {
+        warnings.push(warning.message);
+      }
+    });
+  }
+
+  if (snapshot.status && Array.isArray(snapshot.status.warnings)) {
+    snapshot.status.warnings.forEach((warning) => warnings.push(warning));
+  }
+
+  return warnings;
+}
+
+function renderWarnings(warnings) {
+  if (!warnings.length) {
+    return `<p><span class="details-label">Warnings:</span> None</p>`;
+  }
+
+  const warningItems = warnings
+    .map((warning) => `<li>${escapeHtml(warning)}</li>`)
+    .join("");
+
+  return `
+    <p><span class="details-label">Warnings:</span></p>
+    <ul class="warning-list">${warningItems}</ul>
+  `;
+}
+
+function sourceClass(source) {
+  if (source === "live") {
+    return "source-live";
+  }
+
+  if (source === "cache") {
+    return "source-cache";
+  }
+
+  if (source === "sample") {
+    return "source-sample";
+  }
+
+  return "source-error";
+}
+
+function formatYesNo(value) {
+  if (value === true) {
+    return "Yes";
+  }
+
+  if (value === false) {
+    return "No";
+  }
+
+  return "Unknown";
 }
 
 function formatTimestamp(epochSeconds) {
