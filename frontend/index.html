@@ -1,1 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PeaceHealth Rides Dashboard</title>
 
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>PeaceHealth Rides Dashboard</h1>
+      <p>Public bike and hub availability map.</p>
+    </div>
+
+    <div id="data-status" class="status-pill">Loading data...</div>
+  </header>
+
+  <main class="layout">
+    <section id="map" aria-label="PeaceHealth Rides availability map"></section>
+
+    <aside class="side-panel">
+      <h2>Map Legend</h2>
+      <p><span class="legend-dot bike-dot"></span> Available bike</p>
+      <p><span class="legend-dot hub-dot"></span> Hub / station</p>
+
+      <h2>Loaded Data</h2>
+      <p id="bike-count">Bikes: --</p>
+      <p id="hub-count">Hubs: --</p>
+
+      <p class="handoff-note">
+        This dashboard shows public availability only. Use the official PeaceHealth Rides app
+        for account, payment, reservation, and unlocking actions.
+      </p>
+    </aside>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
