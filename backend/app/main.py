@@ -3,8 +3,8 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from backend.app.api.routes_dashboard import router as dashboard_router
 from backend.app.api.routes_status import router as status_router
-
 
 app = FastAPI(
     title="PeaceHealth Rides Availability and Navigation Dashboard API",
@@ -20,7 +20,7 @@ app.add_middleware(
 )
 
 app.include_router(status_router)
-
+app.include_router(dashboard_router)
 
 @app.get("/")
 def root():
