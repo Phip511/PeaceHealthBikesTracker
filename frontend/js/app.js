@@ -7,7 +7,7 @@ import {
   enableRouteDisplay,
   useBrowserLocation,
 } from "./route_display.js";
-
+import { renderAlerts } from "./alert_renderer.js";
 
 const map = createMap("map");
 
@@ -19,6 +19,7 @@ const freshnessDetailsElement = document.querySelector("#freshness-details");
 const routeDetailsElement = document.querySelector("#route-details");
 const useLocationButton = document.querySelector("#use-location-button");
 const clearRouteButton = document.querySelector("#clear-route-button");
+const alertsPanelElement = document.querySelector("#alerts-panel");
 
 enableRouteDisplay(map, routeDetailsElement);
 
@@ -38,6 +39,11 @@ async function loadDashboard() {
 
     renderBikeMarkers(map, snapshot.bikes || [], showDestinationDetails);
     renderHubMarkers(map, snapshot.hubs || [], showDestinationDetails);
+    renderAlerts(
+       map,
+       snapshot.alerts || [],
+       alertsPanelElement,
+    ); 
 
     updateCounts(snapshot);
     updateStatus(snapshot.status);

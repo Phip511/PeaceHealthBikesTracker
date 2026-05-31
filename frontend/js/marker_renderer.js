@@ -1,5 +1,7 @@
 let activeMarkerElement = null;
 
+window.hubLookup = {};
+
 function createBikeIcon() {
   return L.divIcon({
     className: "",
@@ -33,6 +35,7 @@ export function renderBikeMarkers(map, bikes, onMarkerSelected) {
            Last reported: ${formatTimestamp(bike.last_reported)}`
         )
         .addTo(map);
+      
 
       marker.on("click", () => {
         setActiveMarker(marker);
@@ -51,6 +54,8 @@ export function renderBikeMarkers(map, bikes, onMarkerSelected) {
 }
 
 export function renderHubMarkers(map, hubs, onMarkerSelected) {
+  window.hubLookup = {};
+
   const hubIcon = createHubIcon();
 
   hubs.forEach((hub) => {
@@ -66,6 +71,8 @@ export function renderHubMarkers(map, hubs, onMarkerSelected) {
          Last reported: ${formatTimestamp(hub.last_reported)}`
       )
       .addTo(map);
+
+    window.hubLookup[hub.station_id] = marker;
 
     marker.on("click", () => {
       setActiveMarker(marker);
