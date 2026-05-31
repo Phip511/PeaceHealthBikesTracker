@@ -63,7 +63,7 @@ export function setStartLocation(map, routeDetailsElement, startLocation) {
     "Start location selected. Now choose a bike or hub destination.";
 }
 
-export function displayRouteToDestination(map, routeDetailsElement, destination) {
+export async function displayRouteToDestination(map, routeDetailsElement, destination) {
   const startLocation = window.currentStartLocation;
 
   if (!startLocation) {
@@ -72,30 +72,32 @@ export function displayRouteToDestination(map, routeDetailsElement, destination)
     return;
   }
 
-  if (routeLine) {
-    map.removeLayer(routeLine);
+  routeDetailsElement.textContent = "Loading walking route...";
+
+  try {
+    const route = await fetchWalkingRoute(startLocation, destination);
+    drawRoute(map, route.coordinates);
+
+    routeDetailsElement.innerHTML = `
+      <p><span class="details-label">Destination:</span> ${escapeHtml(destination.name)}</p>
+      <p><span class="details-label">Route type:</span> Walking route estimate</p>
+      <p><span class="details-label">Distance:</span> ${formatDistance(route.distanceMeters)}</p>
+      <p><span class="details-label">Estimated walk time:</span> ${formatDuration(route.durationSeconds)}</p>
+      <p>This route follows OSRM foot routing when available.</p>
+    `;
+  } catch (error) {
+    console.error(error);
+
+    const fallback = buildStraightLineRoute(startLocation, destination);
+    drawRoute(map, fallback.coordinates);
+
+    routeDetailsElement.innerHTML = `
+      <p><span class="details-label">Destination:</span> ${escapeHtml(destination.name)}</p>
+      <p><span class="details-label">Route type:</span> Straight-line fallback</p>
+      <p><span class="details-label">Approx. distance:</span> ${formatDistance(fallback.distanceMeters)}</p>
+      <p>Walking routing could not be loaded, so this line does not follow streets or paths.</p>
+    `;
   }
-
-  const start = [startLocation.latitude, startLocation.longitude];
-  const end = [destination.latitude, destination.longitude];
-
-  routeLine = L.polyline([start, end], {
-    weight: 4,
-    opacity: 0.8,
-  }).addTo(map);
-
-  map.fitBounds(routeLine.getBounds(), {
-    padding: [40, 40],
-  });
-
-  const distanceMeters = distanceBetweenMeters(startLocation, destination);
-  const distanceMiles = distanceMeters / 1609.344;
-
-  routeDetailsElement.innerHTML = `
-    <p><span class="details-label">Destination:</span> ${escapeHtml(destination.name)}</p>
-    <p><span class="details-label">Approx. straight-line distance:</span> ${distanceMiles.toFixed(2)} miles</p>
-    <p>This is a simple route estimate, not turn-by-turn walking directions.</p>
-  `;
 }
 
 export function clearRoute(map, routeDetailsElement) {
@@ -106,6 +108,67 @@ export function clearRoute(map, routeDetailsElement) {
 
   routeDetailsElement.textContent =
     "Route cleared. Choose a start location, then select a bike or hub.";
+}
+
+async function fetchWalkingRoute(startLocation, destination) {
+  const coordinates = [
+    `${startLocation.longitude},${startLocation.latitude}`,
+    `${destination.longitude},${destination.latitude}`,
+  ].join(";");
+
+  const url =
+    `https://router.project-osrm.org/route/v1/foot/${coordinates}` +
+    "?overview=full&geometries=geojson&steps=false";
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`OSRM request failed with status ${response.status}`);
+  }
+
+  const json = await response.json();
+
+  if (!json.routes || !json.routes.length) {
+    throw new Error("OSRM did not return a route.");
+  }
+
+  const route = json.routes[0];
+
+  return {
+    distanceMeters: route.distance,
+    durationSeconds: route.duration,
+    coordinates: route.geometry.coordinates.map(([longitude, latitude]) => [
+      latitude,
+      longitude,
+    ]),
+  };
+}
+
+function drawRoute(map, coordinates) {
+  if (routeLine) {
+    map.removeLayer(routeLine);
+  }
+
+  routeLine = L.polyline(coordinates, {
+    weight: 4,
+    opacity: 0.85,
+  }).addTo(map);
+
+  map.fitBounds(routeLine.getBounds(), {
+    padding: [40, 40],
+  });
+}
+
+function buildStraightLineRoute(startLocation, destination) {
+  const coordinates = [
+    [startLocation.latitude, startLocation.longitude],
+    [destination.latitude, destination.longitude],
+  ];
+
+  return {
+    coordinates,
+    distanceMeters: distanceBetweenMeters(startLocation, destination),
+  };
 }
 
 function distanceBetweenMeters(start, destination) {
@@ -126,6 +189,30 @@ function distanceBetweenMeters(start, destination) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
   return earthRadiusMeters * c;
+}
+
+function formatDistance(distanceMeters) {
+  const miles = distanceMeters / 1609.344;
+
+  if (miles < 0.1) {
+    return `${Math.round(distanceMeters)} meters`;
+  }
+
+  return `${miles.toFixed(2)} miles`;
+}
+
+function formatDuration(durationSeconds) {
+  const minutes = Math.round(durationSeconds / 60);
+
+  if (minutes < 1) {
+    return "Less than 1 minute";
+  }
+
+  if (minutes === 1) {
+    return "1 minute";
+  }
+
+  return `${minutes} minutes`;
 }
 
 function toRadians(degrees) {
