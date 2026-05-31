@@ -1,3 +1,5 @@
+let activeMarkerElement = null;
+
 function createBikeIcon() {
   return L.divIcon({
     className: "",
@@ -33,6 +35,8 @@ export function renderBikeMarkers(map, bikes, onMarkerSelected) {
         .addTo(map);
 
       marker.on("click", () => {
+        setActiveMarker(marker);
+
         onMarkerSelected({
           type: "bike",
           id: bike.bike_id,
@@ -64,6 +68,8 @@ export function renderHubMarkers(map, hubs, onMarkerSelected) {
       .addTo(map);
 
     marker.on("click", () => {
+      setActiveMarker(marker);
+
       onMarkerSelected({
         type: "hub",
         id: hub.station_id,
@@ -75,6 +81,20 @@ export function renderHubMarkers(map, hubs, onMarkerSelected) {
       });
     });
   });
+}
+
+function setActiveMarker(marker) {
+  if (activeMarkerElement) {
+    activeMarkerElement.classList.remove("marker-selected");
+  }
+
+  const markerElement = marker.getElement();
+
+  if (markerElement) {
+    const visualMarker = markerElement.firstElementChild || markerElement;
+    visualMarker.classList.add("marker-selected");
+    activeMarkerElement = visualMarker;
+  }
 }
 
 function formatTimestamp(epochSeconds) {

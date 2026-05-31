@@ -182,3 +182,9 @@ body {
   color: #991b1b;
   font-weight: 700;
 }
+
+.marker-selected {
+  outline: 4px solid #facc15;
+  outline-offset: 2px;
+  transform: scale(1.25);
+}
