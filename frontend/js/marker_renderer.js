@@ -18,23 +18,35 @@ function createHubIcon() {
   });
 }
 
-export function renderBikeMarkers(map, bikes) {
+export function renderBikeMarkers(map, bikes, onMarkerSelected) {
   const bikeIcon = createBikeIcon();
 
   bikes
     .filter((bike) => bike.is_available)
     .forEach((bike) => {
-      L.marker([bike.latitude, bike.longitude], { icon: bikeIcon })
+      const marker = L.marker([bike.latitude, bike.longitude], { icon: bikeIcon })
         .bindPopup(
           `<strong>Available Bike</strong><br>
            ID: ${bike.bike_id}<br>
            Last reported: ${formatTimestamp(bike.last_reported)}`
         )
         .addTo(map);
+
+      marker.on("click", () => {
+        onMarkerSelected({
+          type: "bike",
+          id: bike.bike_id,
+          name: "Available Bike",
+          latitude: bike.latitude,
+          longitude: bike.longitude,
+          availableBikes: null,
+          lastReported: bike.last_reported,
+        });
+      });
     });
 }
 
-export function renderHubMarkers(map, hubs) {
+export function renderHubMarkers(map, hubs, onMarkerSelected) {
   const hubIcon = createHubIcon();
 
   hubs.forEach((hub) => {
@@ -43,13 +55,25 @@ export function renderHubMarkers(map, hubs) {
         ? "Unknown"
         : hub.available_bikes;
 
-    L.marker([hub.latitude, hub.longitude], { icon: hubIcon })
+    const marker = L.marker([hub.latitude, hub.longitude], { icon: hubIcon })
       .bindPopup(
         `<strong>${hub.name}</strong><br>
          Available bikes: ${availableText}<br>
          Last reported: ${formatTimestamp(hub.last_reported)}`
       )
       .addTo(map);
+
+    marker.on("click", () => {
+      onMarkerSelected({
+        type: "hub",
+        id: hub.station_id,
+        name: hub.name,
+        latitude: hub.latitude,
+        longitude: hub.longitude,
+        availableBikes: hub.available_bikes,
+        lastReported: hub.last_reported,
+      });
+    });
   });
 }
 

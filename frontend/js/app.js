@@ -7,6 +7,7 @@ const map = createMap("map");
 const dataStatusElement = document.querySelector("#data-status");
 const bikeCountElement = document.querySelector("#bike-count");
 const hubCountElement = document.querySelector("#hub-count");
+const destinationDetailsElement = document.querySelector("#destination-details");
 
 loadDashboard();
 
@@ -14,8 +15,8 @@ async function loadDashboard() {
   try {
     const snapshot = await fetchDashboardSnapshot();
 
-    renderBikeMarkers(map, snapshot.bikes || []);
-    renderHubMarkers(map, snapshot.hubs || []);
+    renderBikeMarkers(map, snapshot.bikes || [], showDestinationDetails);
+    renderHubMarkers(map, snapshot.hubs || [], showDestinationDetails);
 
     updateCounts(snapshot);
     updateStatus(snapshot.status);
@@ -43,4 +44,39 @@ function updateStatus(status) {
 
   dataStatusElement.textContent = status.visible_message || status.source_label;
   dataStatusElement.className = `status-pill ${status.source}`;
+}
+
+function showDestinationDetails(destination) {
+  const typeLabel = destination.type === "bike" ? "Bike" : "Hub";
+  const availableBikesText =
+    destination.availableBikes === null || destination.availableBikes === undefined
+      ? "N/A"
+      : destination.availableBikes;
+
+  destinationDetailsElement.innerHTML = `
+    <p><span class="details-label">Type:</span> ${typeLabel}</p>
+    <p><span class="details-label">Name:</span> ${escapeHtml(destination.name)}</p>
+    <p><span class="details-label">ID:</span> ${escapeHtml(destination.id)}</p>
+    <p><span class="details-label">Latitude:</span> ${destination.latitude.toFixed(6)}</p>
+    <p><span class="details-label">Longitude:</span> ${destination.longitude.toFixed(6)}</p>
+    <p><span class="details-label">Available bikes:</span> ${availableBikesText}</p>
+    <p><span class="details-label">Last reported:</span> ${formatTimestamp(destination.lastReported)}</p>
+  `;
+}
+
+function formatTimestamp(epochSeconds) {
+  if (!epochSeconds) {
+    return "Unknown";
+  }
+
+  return new Date(epochSeconds * 1000).toLocaleString();
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
