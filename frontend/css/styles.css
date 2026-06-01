@@ -234,3 +234,30 @@ body {
 .alert-description {
   color: #57534e;
 }
+
+.hidden {
+  display: none;
+}
+
+.mode-warning {
+  padding: 10px 24px;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #d9e2ec;
+}
+
+.mode-warning.cache,
+.mode-warning.sample,
+.mode-warning.degraded {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.mode-warning.error {
+  background: #fecaca;
+  color: #991b1b;
+}
+
+.mode-warning.live {
+  background: #dcfce7;
+  color: #166534;
+}

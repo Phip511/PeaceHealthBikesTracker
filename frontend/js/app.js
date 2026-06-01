@@ -20,6 +20,7 @@ const routeDetailsElement = document.querySelector("#route-details");
 const useLocationButton = document.querySelector("#use-location-button");
 const clearRouteButton = document.querySelector("#clear-route-button");
 const alertsPanelElement = document.querySelector("#alerts-panel");
+const modeWarningElement = document.querySelector("#mode-warning");
 
 enableRouteDisplay(map, routeDetailsElement);
 
@@ -48,6 +49,7 @@ async function loadDashboard() {
     updateCounts(snapshot);
     updateStatus(snapshot.status);
     updateFreshness(snapshot);
+    updateModeWarning(snapshot.status);
   } catch (error) {
     console.error(error);
     dataStatusElement.textContent = "Could not load dashboard data.";
@@ -57,6 +59,11 @@ async function loadDashboard() {
       <p><span class="details-label">Status:</span> <span class="source-error">Error</span></p>
       <p>Could not load freshness information.</p>
     `;
+    updateModeWarning({
+  source: "error",
+  status: "error",
+  visible_message: "Dashboard data could not be loaded. Check that the backend is running.",
+});
   }
 }
 
@@ -194,4 +201,50 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function updateModeWarning(status) {
+  if (!status) {
+    modeWarningElement.textContent =
+      "Data mode is unknown. Availability information may be incomplete.";
+    modeWarningElement.className = "mode-warning error";
+    return;
+  }
+
+  const source = status.source || "unknown";
+  const statusValue = status.status || "unknown";
+
+  if (source === "live" && statusValue === "ok") {
+    modeWarningElement.textContent =
+      "Live availability data is active.";
+    modeWarningElement.className = "mode-warning live hidden";
+    return;
+  }
+
+  if (source === "cache") {
+    modeWarningElement.textContent =
+      "Live data could not be refreshed. Cached availability data is being displayed and may be stale.";
+    modeWarningElement.className = "mode-warning cache";
+    return;
+  }
+
+  if (source === "sample") {
+    modeWarningElement.textContent =
+      "Sample data is being displayed for demonstration. It does not represent current bike availability.";
+    modeWarningElement.className = "mode-warning sample";
+    return;
+  }
+
+  if (statusValue === "degraded") {
+    modeWarningElement.textContent =
+      status.visible_message ||
+      "The system is running in degraded mode. Availability data may be incomplete or stale.";
+    modeWarningElement.className = "mode-warning degraded";
+    return;
+  }
+
+  modeWarningElement.textContent =
+    status.visible_message ||
+    "Dashboard data could not be loaded. Availability information may be unavailable.";
+  modeWarningElement.className = "mode-warning error";
 }
