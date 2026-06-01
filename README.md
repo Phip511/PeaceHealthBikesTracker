@@ -176,3 +176,18 @@ Example:
 ## Commit notes
 
 Try to commit smaller steps rather than large chunks just to keep track of stuff easier.
+
+## Live, Cached, and Sample Data Behavior
+
+The dashboard can report three data modes: live, cached, and sample.
+
+**Live Data** means the backend successfully loaded current PeaceHealth Rides GBFS data from the public feed. This is the preferred mode and is shown in the frontend as live availability data.
+
+**Cached Data** means the live feed could not be refreshed, but the backend has a previously successful feed response stored locally. Cached data may be stale, so the frontend labels it clearly and warns the user that current bike availability may have changed.
+
+**Sample Data** means the system is using local demonstration JSON files from the repository. Sample data is intended for testing, installation checks, and demos when live data is unavailable. It does not represent current PeaceHealth Rides availability.
+
+The `/api/status` endpoint reports the current data source, source label, feed availability, last successful update time, and any fallback warnings. The frontend uses this information to show whether the dashboard is displaying live, cached, or sample data.
+
+The `/api/dashboard` endpoint includes this status information along with normalized bikes, hubs, alerts, and freshness metadata.
+
