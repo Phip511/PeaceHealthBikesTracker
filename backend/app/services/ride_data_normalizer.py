@@ -1,8 +1,22 @@
-"""Normalize raw GBFS feed documents into project-level data objects.
+"""File: ride_data_normalizer.py
 
-The normalizer is intentionally defensive. GBFS feeds can vary by version and
-provider, so this module accepts both older v1/v2 field names and newer v3
-vehicle/station field names where the project needs them.
+Purpose:
+    Normalize raw GBFS feed documents into project-level data objects.
+
+System context:
+    The normalizer is intentionally defensive. GBFS feeds can vary by version and
+    provider, so this module accepts both older v1/v2 field names and newer v3
+    vehicle/station field names where the project needs them.
+
+Creation date:
+    May 27, 2026
+
+Initial author:
+    Drew Moulton
+
+Modification history:
+    May 27/28, 2026 - Drew Moulton - Implemented normalization for bikes, hubs,
+    alerts, and feed freshness.
 """
 
 from __future__ import annotations
