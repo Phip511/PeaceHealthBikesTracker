@@ -83,7 +83,8 @@ export async function displayRouteToDestination(map, routeDetailsElement, destin
       <p><span class="details-label">Route type:</span> Walking route estimate</p>
       <p><span class="details-label">Distance:</span> ${formatDistance(route.distanceMeters)}</p>
       <p><span class="details-label">Estimated walk time:</span> ${formatDuration(route.durationSeconds)}</p>
-      <p>This route follows OSRM foot routing when available.</p>
+      <p>Walking routes are estimates based on OpenStreetMap/OSRM routing data. Campus 
+      paths may be incomplete. Follow posted signs and avoid restricted or private areas.</p>
     `;
   } catch (error) {
     console.error(error);
@@ -95,7 +96,8 @@ export async function displayRouteToDestination(map, routeDetailsElement, destin
       <p><span class="details-label">Destination:</span> ${escapeHtml(destination.name)}</p>
       <p><span class="details-label">Route type:</span> Straight-line fallback</p>
       <p><span class="details-label">Approx. distance:</span> ${formatDistance(fallback.distanceMeters)}</p>
-      <p>Walking routing could not be loaded, so this line does not follow streets or paths.</p>
+      <p>Walking routing could not be loaded, so this line does not follow streets or paths. 
+      Follow posted signs and avoid restricted or private areas.</p>
     `;
   }
 }
