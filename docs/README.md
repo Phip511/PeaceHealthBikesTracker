@@ -10,12 +10,12 @@ This project does **not** replace the official PeaceHealth Rides app. It does no
 
 ## Authors / Contributors
 
-| Name | Role / Contribution |
+| Name | Role |
 |---|---|
-| Drew Moulton | [Role / Contribution] |
-| Peyton Phillips | [Role / Contribution] |
-| Dacian Rapolla | [Role / Contribution] |
-| Jack Sedillos | [Role / Contribution] |
+| Drew Moulton | [Ride Data Normalizer & Ride Feed Collector] |
+| Peyton Phillips | [SRS/SDS/PP & Interviews & Team Lead] |
+| Dacian Rapolla | [Bike Finder Map & Status/Fallback Service] |
+| Jack Sedillos | [Route Guidance Service & Availability Query Service] |
 
 ## Installation Instructions
 
