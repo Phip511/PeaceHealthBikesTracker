@@ -50,6 +50,9 @@ python -m pip install -r backend/requirements.txt
 python -m unittest discover -s backend/tests
 ```
 
+For instructions on using the dashboard after it is running, see
+`docs/UserGuide.md`.
+
 ## File Structure
 ```
 peacehealth-bike-dashboard/
