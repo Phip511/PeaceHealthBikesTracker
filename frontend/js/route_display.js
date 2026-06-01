@@ -1,14 +1,20 @@
 let startMarker = null;
 let routeLine = null;
 
-export function enableRouteDisplay(map, routeDetailsElement) {
+export function enableRouteDisplay(map, routeDetailsElement, onStartLocationSet) {
   map.on("click", (event) => {
-    setStartLocation(map, routeDetailsElement, {
-      latitude: event.latlng.lat,
-      longitude: event.latlng.lng,
-    });
+    setStartLocation(
+      map,
+      routeDetailsElement,
+      {
+        latitude: event.latlng.lat,
+        longitude: event.latlng.lng,
+      },
+      onStartLocationSet,
+    );
   });
 }
+
 
 export function useBrowserLocation(map, routeDetailsElement, onStartLocationSet) {
   if (!navigator.geolocation) {
@@ -25,12 +31,8 @@ export function useBrowserLocation(map, routeDetailsElement, onStartLocationSet)
         longitude: position.coords.longitude,
       };
 
-      setStartLocation(map, routeDetailsElement, startLocation);
+      setStartLocation(map, routeDetailsElement, startLocation, onStartLocationSet);
       map.setView([startLocation.latitude, startLocation.longitude], 15);
-
-      if (onStartLocationSet) {
-        onStartLocationSet(startLocation);
-      }
     },
     () => {
       routeDetailsElement.textContent =
@@ -39,7 +41,8 @@ export function useBrowserLocation(map, routeDetailsElement, onStartLocationSet)
   );
 }
 
-export function setStartLocation(map, routeDetailsElement, startLocation) {
+
+export function setStartLocation(map, routeDetailsElement, startLocation, onStartLocationSet) {
   window.currentStartLocation = startLocation;
 
   if (startMarker) {
@@ -61,7 +64,12 @@ export function setStartLocation(map, routeDetailsElement, startLocation) {
 
   routeDetailsElement.textContent =
     "Start location selected. Now choose a bike or hub destination.";
+
+  if (onStartLocationSet) {
+    onStartLocationSet(startLocation);
+  }
 }
+
 
 export async function displayRouteToDestination(map, routeDetailsElement, destination) {
   const startLocation = window.currentStartLocation;

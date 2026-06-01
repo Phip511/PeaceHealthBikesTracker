@@ -21,12 +21,15 @@ const useLocationButton = document.querySelector("#use-location-button");
 const clearRouteButton = document.querySelector("#clear-route-button");
 const alertsPanelElement = document.querySelector("#alerts-panel");
 const modeWarningElement = document.querySelector("#mode-warning");
+const nearbyListElement = document.querySelector("#nearby-list");
 
-enableRouteDisplay(map, routeDetailsElement);
+let latestSnapshot = null;
+
+enableRouteDisplay(map, routeDetailsElement, updateNearbyList);
 
 useLocationButton.addEventListener("click", () => {
-  useBrowserLocation(map, routeDetailsElement);
-});
+    useBrowserLocation(map, routeDetailsElement, updateNearbyList);
+  });
 
 clearRouteButton.addEventListener("click", () => {
   clearRoute(map, routeDetailsElement);
@@ -37,6 +40,8 @@ loadDashboard();
 async function loadDashboard() {
   try {
     const snapshot = await fetchDashboardSnapshot();
+    
+    latestSnapshot = snapshot;
 
     renderBikeMarkers(map, snapshot.bikes || [], showDestinationDetails);
     renderHubMarkers(map, snapshot.hubs || [], showDestinationDetails);
@@ -247,4 +252,113 @@ function updateModeWarning(status) {
     status.visible_message ||
     "Dashboard data could not be loaded. Availability information may be unavailable.";
   modeWarningElement.className = "mode-warning error";
+}
+
+function updateNearbyList() {
+  const startLocation = window.currentStartLocation;
+
+  if (!startLocation || !latestSnapshot) {
+    nearbyListElement.innerHTML =
+      "<p>Choose a start location to see nearby bikes and hubs.</p>";
+    return;
+  }
+
+  const bikes = (latestSnapshot.bikes || [])
+    .filter((bike) => bike.is_available)
+    .map((bike) => ({
+      type: "bike",
+      id: bike.bike_id,
+      name: "Available Bike",
+      latitude: bike.latitude,
+      longitude: bike.longitude,
+      availableBikes: null,
+      lastReported: bike.last_reported,
+      distanceMeters: distanceBetweenMeters(startLocation, {
+        latitude: bike.latitude,
+        longitude: bike.longitude,
+      }),
+    }));
+
+  const hubs = (latestSnapshot.hubs || [])
+    .filter((hub) => hub.available_bikes === null || hub.available_bikes > 0)
+    .map((hub) => ({
+      type: "hub",
+      id: hub.station_id,
+      name: hub.name,
+      latitude: hub.latitude,
+      longitude: hub.longitude,
+      availableBikes: hub.available_bikes,
+      lastReported: hub.last_reported,
+      distanceMeters: distanceBetweenMeters(startLocation, {
+        latitude: hub.latitude,
+        longitude: hub.longitude,
+      }),
+    }));
+
+  const nearbyOptions = [...bikes, ...hubs]
+    .sort((a, b) => a.distanceMeters - b.distanceMeters)
+    .slice(0, 5);
+
+  if (!nearbyOptions.length) {
+    nearbyListElement.innerHTML = "<p>No nearby available bikes or hubs found.</p>";
+    return;
+  }
+
+  nearbyListElement.innerHTML = nearbyOptions
+    .map(
+      (option, index) => `
+        <button class="nearby-button" data-nearby-index="${index}">
+          <div class="nearby-title">${escapeHtml(option.name)}</div>
+          <div class="nearby-meta">
+            ${option.type === "bike" ? "Bike" : "Hub"} · ${formatDistance(option.distanceMeters)}
+          </div>
+        </button>
+      `,
+    )
+    .join("");
+
+  nearbyListElement.querySelectorAll(".nearby-button").forEach((button) => {
+    button.addEventListener("click", () => {
+      const index = Number(button.dataset.nearbyIndex);
+      const destination = nearbyOptions[index];
+
+      if (destination) {
+        showDestinationDetails(destination);
+      }
+    });
+  });
+}
+
+function distanceBetweenMeters(start, destination) {
+  const earthRadiusMeters = 6371000;
+
+  const lat1 = toRadians(start.latitude);
+  const lat2 = toRadians(destination.latitude);
+  const deltaLat = toRadians(destination.latitude - start.latitude);
+  const deltaLon = toRadians(destination.longitude - start.longitude);
+
+  const a =
+    Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+    Math.cos(lat1) *
+      Math.cos(lat2) *
+      Math.sin(deltaLon / 2) *
+      Math.sin(deltaLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return earthRadiusMeters * c;
+}
+
+function toRadians(degrees) {
+  return degrees * (Math.PI / 180);
+}
+
+function formatDistance(distanceMeters) {
+  const miles = distanceMeters / 1609.344;
+
+  if (miles < 0.1) {
+    return `${Math.round(distanceMeters)} meters`;
+  }
+
+  return `${miles.toFixed(2)} miles`;
 }
