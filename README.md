@@ -19,6 +19,10 @@ This project does **not** replace the official PeaceHealth Rides app. It does no
 
 ## Installation Instructions
 
+This project is intended to run with Docker Compose. Docker builds the backend
+Python environment from `backend/requirements.txt`, so a local Python virtual
+environment is not required for normal installation.
+
 Install Docker Desktop, then run the application from the project root:
 
 ```bash
@@ -29,6 +33,21 @@ Local access points:
 ```
 Frontend: http://localhost:8080
 Backend API: http://localhost:8000
+```
+
+To stop the containers:
+
+```bash
+docker compose down
+```
+
+Optional local backend setup for development or testing:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r backend/requirements.txt
+python -m unittest discover -s backend/tests
 ```
 
 ## File Structure

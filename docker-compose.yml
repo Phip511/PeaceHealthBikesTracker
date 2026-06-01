@@ -1,21 +1,38 @@
+# Docker Compose starts the two services needed for the dashboard:
+# - backend: FastAPI application that loads GBFS data and serves JSON endpoints.
+# - frontend: nginx web server that serves the static browser dashboard.
 services:
   backend:
+    # Build the backend image from backend/Dockerfile.
     build:
       context: ./backend
     container_name: peacehealth-backend
+
+    # Expose FastAPI on http://localhost:8000.
     ports:
       - "8000:8000"
+
+    # APP_MODE=live attempts live GBFS data first. The backend can fall back
+    # to cached or sample data when live data cannot be loaded.
     environment:
       - APP_MODE=live
       - GBFS_AUTO_DISCOVERY_URL=https://peacehealthrides.com/opendata/gbfs.json
+
+    # Persist downloaded live feed cache files on the host so cached fallback
+    # data survives container rebuilds and restarts.
     volumes:
       - ./backend/app/data/cache:/app/backend/app/data/cache
 
   frontend:
+    # Build the frontend image from frontend/Dockerfile.
     build:
       context: ./frontend
     container_name: peacehealth-frontend
+
+    # Expose the nginx-served dashboard on http://localhost:8080.
     ports:
       - "8080:80"
+
+    # Start the backend before the frontend container.
     depends_on:
       - backend
