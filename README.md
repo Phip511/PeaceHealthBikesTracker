@@ -19,18 +19,16 @@ This project does **not** replace the official PeaceHealth Rides app. It does no
 
 ## Installation Instructions
 
-Installation instructions will be added later.
-
-Planned installation method:
+Install Docker Desktop, then run the application from the project root:
 
 ```bash
-docker compose up -- build
+docker compose up --build
 ```
 
-Planned local access points:
+Local access points:
 ```
-Frontend: https://localhost:8080
-Backend API: https://localhost:8000
+Frontend: http://localhost:8080
+Backend API: http://localhost:8000
 ```
 
 ## File Structure
@@ -190,4 +188,3 @@ The dashboard can report three data modes: live, cached, and sample.
 The `/api/status` endpoint reports the current data source, source label, feed availability, last successful update time, and any fallback warnings. The frontend uses this information to show whether the dashboard is displaying live, cached, or sample data.
 
 The `/api/dashboard` endpoint includes this status information along with normalized bikes, hubs, alerts, and freshness metadata.
-
