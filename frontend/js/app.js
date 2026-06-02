@@ -1,3 +1,39 @@
+/*
+File: app.js
+
+Purpose:
+    Serves as the primary frontend controller for the PeaceHealth Rides
+    Availability and Navigation Dashboard. This module coordinates map
+    initialization, dashboard data loading, marker rendering, routing,
+    alerts, status displays, destination details, nearby location
+    recommendations, and user interface updates.
+
+System context:
+    This file acts as the integration layer between frontend modules.
+    It retrieves dashboard data from the backend API, initializes the
+    map, renders bikes and hubs, displays status and freshness
+    information, manages route generation, processes system alerts,
+    and updates user-facing dashboard panels.
+
+Creation date:
+    May 2026
+
+Initial author:
+    Dacian Rapolla
+
+Modification history:
+    June 2026 - Dacian Rapolla - Created frontend application controller.
+    June 2026 - Dacian Rapolla - Added dashboard snapshot loading and
+    status display integration.
+    June 2026 - Dacian Rapolla - Added destination details and marker
+    selection handling.
+    June 2026 - Dacian Rapolla - Added route generation and browser
+    location support.
+    June 2026 - Dacian Rapolla - Added system alert rendering and
+    degraded-mode messaging.
+    June 2026 - Dacian Rapolla - Added nearby bike and hub list view.
+*/
+
 import { fetchDashboardSnapshot } from "./api_client.js";
 import { createMap } from "./map_view.js";
 import { renderBikeMarkers, renderHubMarkers } from "./marker_renderer.js";

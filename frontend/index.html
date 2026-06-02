@@ -1,80 +1,230 @@
+<!--
+File: index.html
+
+Purpose:
+    Defines the main user interface for the PeaceHealth Rides
+    Availability and Navigation Dashboard.
+
+System context:
+    This page serves as the primary frontend entry point. It hosts the
+    interactive Leaflet map, status displays, routing controls,
+    destination details, nearby locations list, and system alerts.
+
+Creation date:
+    May 2026
+
+Initial author:
+    Dacian Rapolla
+
+Modification history:
+    June 2026 - Dacian Rapolla - Created dashboard layout, routing
+    controls, destination details panel, nearby list view, alert
+    display, and status/fallback messaging.
+-->
+
 <!doctype html>
 <html lang="en">
 <head>
+
+  <!-- Character encoding and responsive viewport configuration. -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Browser tab title. -->
   <title>PeaceHealth Rides Dashboard</title>
 
+  <!--
+    Leaflet CSS
+
+    Provides map rendering styles, marker positioning,
+    popups, and other mapping components.
+  -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
 
+  <!-- Application-specific styling. -->
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
+
 <body>
+
+  <!-- ============================================================
+       Application Header
+       ============================================================
+
+       Displays the application title, brief description,
+       and current dashboard status.
+  -->
   <header class="app-header">
     <div>
       <h1>PeaceHealth Rides Dashboard</h1>
       <p>Public bike and hub availability map.</p>
     </div>
 
-    <div id="data-status" class="status-pill">Loading data...</div>
+    <div id="data-status" class="status-pill">
+      Loading data...
+    </div>
   </header>
 
+  <!--
+    Fallback / degraded-mode warning banner.
+
+    Hidden during normal operation. Displayed when cached,
+    sample, or unavailable data sources are being used.
+  -->
   <div id="mode-warning" class="mode-warning hidden"></div>
 
-  <main class="layout">
-    <section id="map" aria-label="PeaceHealth Rides availability map"></section>
+  <!-- ============================================================
+       Main Application Layout
+       ============================================================
 
+       Contains the interactive map and supporting information
+       panels used by the Bike Finder Map feature.
+  -->
+  <main class="layout">
+
+    <!--
+      Interactive map container.
+
+      Leaflet renders bike markers, hub markers, routing
+      information, and alert indicators inside this region.
+    -->
+    <section
+      id="map"
+      aria-label="PeaceHealth Rides availability map">
+    </section>
+
+    <!-- ==========================================================
+         Sidebar Information Panel
+         ==========================================================
+
+         Contains all user-facing dashboard information that
+         supplements the map display.
+    -->
     <aside class="side-panel">
+
+      <!-- Map marker legend. -->
       <h2>Map Legend</h2>
       <p><span class="legend-dot bike-dot"></span> Available bike</p>
       <p><span class="legend-dot hub-dot"></span> Hub / station</p>
 
+      <!--
+        Data counts loaded into the current dashboard snapshot.
+      -->
       <h2>Loaded Data</h2>
       <p id="bike-count">Bikes: --</p>
       <p id="hub-count">Hubs: --</p>
-     
+
+      <!--
+        Data freshness and source information.
+
+        Displays:
+          - active source
+          - timestamps
+          - availability state
+          - fallback warnings
+      -->
       <h2>Data Freshness</h2>
       <div id="freshness-details" class="details-panel">
         <p>Waiting for data freshness information.</p>
       </div>
-     
+
+      <!--
+        System alerts panel.
+
+        Displays public service alerts that may affect
+        bike or hub availability.
+      -->
       <h2>System Alerts</h2>
       <div id="alerts-panel" class="details-panel">
         <p>No alerts loaded.</p>
       </div>
 
+      <!--
+        Route planning controls.
+
+        Allows users to:
+          - use browser location
+          - select a start location
+          - clear routes
+          - view route estimates
+      -->
       <h2>Route</h2>
       <div class="details-panel">
-        <button id="use-location-button" class="route-button">Use my location</button>
-        <button id="clear-route-button" class="route-button secondary">Clear route</button>
-        <p id="route-details">Choose a start location, then select a bike or hub.</p>
-	<p class="route-warning">
-          Walking routes are estimates based on OpenStreetMap/OSRM routing data.
-          Campus paths may be incomplete. Follow posted signs and avoid restricted or private           areas.
+
+        <button
+          id="use-location-button"
+          class="route-button">
+          Use my location
+        </button>
+
+        <button
+          id="clear-route-button"
+          class="route-button secondary">
+          Clear route
+        </button>
+
+        <p id="route-details">
+          Choose a start location, then select a bike or hub.
+        </p>
+
+        <!--
+          Route disclaimer.
+
+          OSRM/OpenStreetMap pedestrian routing is used for route
+          estimation and may not include every campus pathway.
+        -->
+        <p class="route-warning">
+          Walking routes are estimates based on OpenStreetMap/OSRM
+          routing data. Campus paths may be incomplete. Follow
+          posted signs and avoid restricted or private areas.
         </p>
       </div>
 
+      <!--
+        Nearby options list.
+
+        Displays the closest available bikes and hubs relative
+        to the selected start location.
+      -->
       <h2>Nearby Options</h2>
       <div id="nearby-list" class="details-panel">
         <p>Choose a start location to see nearby bikes and hubs.</p>
       </div>
 
+      <!--
+        Destination details panel.
+
+        Updated whenever the user selects a bike or hub marker.
+      -->
       <h2>Selected Destination</h2>
       <div id="destination-details" class="details-panel">
-       <p>Select a bike or hub marker to see details.</p>
+        <p>Select a bike or hub marker to see details.</p>
       </div>
 
+      <!--
+        Official application handoff.
+
+        The dashboard provides availability and navigation only.
+        Account management and bike unlocking remain in the
+        official PeaceHealth Rides application.
+      -->
       <p class="handoff-note">
-        This dashboard shows public availability only. Use the official PeaceHealth Rides app
-        for account, payment, reservation, and unlocking actions.
+        This dashboard shows public availability only.
+        Use the official PeaceHealth Rides app for account,
+        payment, reservation, and unlocking actions.
       </p>
+
     </aside>
   </main>
 
+  <!-- Leaflet mapping library. -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Main frontend application entry point. -->
   <script type="module" src="./js/app.js"></script>
+
 </body>
 </html>

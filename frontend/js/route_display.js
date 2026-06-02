@@ -1,3 +1,31 @@
+/*
+File: route_display.js
+
+Purpose:
+    Implements route selection and route visualization for the Bike
+    Finder Map feature. This module manages user start locations,
+    browser geolocation, route generation, route display, and route
+    clearing functionality.
+
+System context:
+    This file is part of the PeaceHealth Rides Availability and
+    Navigation Dashboard frontend. It provides the routing behavior
+    used when users select a bike or hub destination and request
+    walking directions from their current location.
+
+Creation date:
+    May 2026
+
+Initial author:
+    Dacian Rapolla
+
+Modification history:
+    June 2026 - Dacian Rapolla - Added start location selection,
+    browser geolocation support, OSRM walking route integration,
+    straight-line fallback routing, route visualization, and
+    route-clearing functionality.
+*/
+
 let startMarker = null;
 let routeLine = null;
 

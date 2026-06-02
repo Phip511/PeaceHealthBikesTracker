@@ -1,3 +1,29 @@
+/*
+File: styles.css
+
+Purpose:
+    Defines the visual appearance of the PeaceHealth Rides Availability
+    and Navigation Dashboard frontend.
+
+System context:
+    This stylesheet controls the layout, map presentation, status
+    indicators, routing controls, alert displays, destination details,
+    nearby options, and responsive mobile behavior used throughout the
+    Bike Finder Map interface.
+
+Creation date:
+    May 2026
+
+Initial author:
+    Dacian Rapolla
+
+Modification history:
+    June 2026 - Dacian Rapolla - Created dashboard layout, status
+    indicators, routing controls, alerts styling, nearby list view,
+    fallback mode messaging, and mobile-responsive layouts.
+*/
+
+
 * {
   box-sizing: border-box;
 }

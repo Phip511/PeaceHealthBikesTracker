@@ -1,3 +1,30 @@
+/*
+File: marker_renderer.js
+
+Purpose:
+    Creates and displays bike and hub markers on the dashboard map.
+    This module is responsible for marker appearance, marker selection,
+    popup content, and communication between map markers and the
+    destination details panel.
+
+System context:
+    This file is part of the PeaceHealth Rides Availability and
+    Navigation Dashboard frontend. It converts normalized bike and
+    hub data into interactive Leaflet markers that users can select
+    to view availability and routing information.
+
+Creation date:
+    May 2026
+
+Initial author:
+    Dacian Rapolla
+
+Modification history:
+    June 2026 - Dacian Rapolla - Added bike marker rendering, hub
+    marker rendering, marker selection highlighting, popup support,
+    and hub lookup support for system alerts.
+*/
+
 let activeMarkerElement = null;
 
 window.hubLookup = {};
