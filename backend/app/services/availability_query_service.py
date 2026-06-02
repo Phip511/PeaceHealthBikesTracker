@@ -1,4 +1,16 @@
 """
+Title of file: availability_query_service.py
+Created: 6-1-26
+Authors: Jack Sedillos
+Backend service
+
+The Availability Query Service answers project-specific questions about available bikes and hubs. 
+It filters unavailable entries, computes distances, ranks nearby destinations, and provides simplified 
+results to the Dashboard API.It answers questions such as:
+• “Which bikes are currently visible?”
+• “Which hubs have bikes available?”
+• “Which bikes or hubs are nearest to this coordinate?”
+
 functions
   list_available_bikes(bikes):  List[BikeLocation]
   list_available_hubs(hubs):   List[HubLocation]

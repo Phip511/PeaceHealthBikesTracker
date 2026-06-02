@@ -1,5 +1,13 @@
 
 """
+Title of file: route_guidance_service.py
+Created: 6-1-26
+Authors: Jack Sedillos
+Backend service
+The Route Guidance Service provides directions or route estimates from a user-selected 
+starting location to a selected bike or hub. In the initial system, this may be implemented 
+as an approximate walking distance and an external map link.
+
 functions
   create_route_to_bike(start_lat, start_lon, bike) 
   create_route_to_hub(start_lat, start_lon, hub) 
